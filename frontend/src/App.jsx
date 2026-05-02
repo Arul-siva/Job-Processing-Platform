@@ -67,6 +67,7 @@ function App() {
       if (data.token) {
         localStorage.setItem('token', data.token);
         setToken(data.token);
+        setUsername('');
       }
     } catch (err) {
       alert('Login failed');
@@ -77,6 +78,7 @@ function App() {
     localStorage.removeItem('token');
     setToken('');
     setJobs([]);
+    setUsername('');
   };
 
   const fetchJobs = async () => {
