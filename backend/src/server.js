@@ -109,12 +109,21 @@ app.get('/metrics', async (req, res) => {
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/job_platform';
 
+// Debug: Log environment on startup
+console.log('Starting server...');
+console.log('PORT:', PORT);
+console.log('MONGO_URI:', MONGO_URI.substring(0, 50) + '...');
+console.log('REDIS_URL set:', !!process.env.REDIS_URL);
+
 const startServer = async () => {
   try {
+    console.log('Connecting to MongoDB...');
     await mongoose.connect(MONGO_URI);
     console.log('MongoDB Connected');
 
+    console.log('Connecting to Redis...');
     await connectRedis();
+    console.log('Redis Connected');
 
     // Start background worker loop explicitly passing IO
     startWorker(io);
@@ -144,6 +153,7 @@ const startServer = async () => {
     });
   } catch (err) {
     console.error('Failed to start server:', err);
+    process.stderr.write(`FATAL ERROR: ${err.message}\n${err.stack}\n`);
     process.exit(1);
   }
 };
